@@ -1,1 +1,1 @@
-This is the repository for the QME installer.
+This is the repository for the QME game installer.

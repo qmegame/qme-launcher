@@ -103,6 +103,7 @@ public class LauncherWindow extends JPanel implements ActionListener {
             case "selectversion":
                 JComboBox comboBox = (JComboBox) e.getSource();
                 versionStatusLabel.setText(installer.isInstalled(version) ? "Version " + comboBox.getSelectedItem() + " is installed" : "Version " + comboBox.getSelectedItem() + " is not installed");
+                break;
             case "launchgame":
                 if (installer.isInstalled(version)) {
                     installer.launchVersion(version);
@@ -122,6 +123,7 @@ public class LauncherWindow extends JPanel implements ActionListener {
                         swingWorker.execute();
                     }
                 }
+                break;
         }
     }
 

@@ -12,6 +12,10 @@ import java.net.URL;
  */
 public class LinuxInstaller extends Installer {
 
+    public LinuxInstaller() {
+        steps = 4;
+    }
+
     @Override
     public void install(String version) {
         step("Validating runtime");

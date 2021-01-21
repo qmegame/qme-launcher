@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author cameron
  * @since 1.0.0
  */
-public class Main {
+public class  Main {
 
     /**
      * This is true of the application is started with the -install argument. No UI should be loaded.

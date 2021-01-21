@@ -6,24 +6,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class LinuxInstaller extends Installer {
+
+    public LinuxInstaller() {
+        steps = 4;
+    }
+
     @Override
     public void install(String version) {
-        System.out.println("Validating runtime...");
+        step("Validating runtime");
         String jre = System.getProperty("java.version");
-        System.out.println("Runtime version " + jre + " detected.");
+        log("Runtime version " + jre + " detected.");
         if (!jre.startsWith("15")) {
-            System.out.println("Failed: Unsupported java runtime environment " + jre + " installation failed. Please update your java version.");
+            fail("Unsupported java runtime environment " + jre + " installation failed. Please update your java version.");
             return;
         }
+        log("Supported runtime detected");
 
-        System.out.println("Creating directories...");
+        step("Creating directories");
         File mainDirectory = new File(System.getProperty("user.home") + "/.qme/" + version);
-        File workingDirectory = new File("~/.qme/" + version + "/qdata");
+        File workingDirectory = new File(System.getProperty("user.home") +  "/.qme/" + version + "/qdata");
         workingDirectory.mkdirs();
         mainDirectory.mkdirs();
-        System.out.println("Directories have been created.");
+        log("Directories have been created.");
 
-        System.out.println("Downloading version " + version + "...");
+        step("Downloading version " + version);
 
         // https://stackoverflow.com/questions/22273045/java-getting-download-progress
         URL url = null;
@@ -36,7 +42,7 @@ public class LinuxInstaller extends Installer {
         try {
             httpConnection = (HttpURLConnection) (url.openConnection());
             if (httpConnection.getResponseCode() == 404) {
-                System.out.println("Failed: Failed to start download. Please try again later.");
+                fail("Failed to start download. Please try again later.");
                 return;
             }
             long completeFileSize = httpConnection.getContentLength();
@@ -51,25 +57,35 @@ public class LinuxInstaller extends Installer {
                 downloadedFileSize += x;
                 final int currentProgress = (int) ((((double)downloadedFileSize) / ((double)completeFileSize)) * 100d);
 
-                System.out.println("Downloading... " + currentProgress + "%");
+                log("Downloading... " + currentProgress + "%");
 
                 bout.write(data, 0, x);
             }
             bout.close();
             in.close();
         } catch (IOException exception) {
-            System.out.println("Failed: Failed to download version " + version + ".");
+            fail("Failed to download version " + version + ".");
             exception.printStackTrace();
             return;
         }
 
-        System.out.println("Finalizing...");
+        step("Finalizing...");
 
-        System.out.println("Installation complete.");
+        complete();
     }
 
     @Override
     public boolean isInstalled(String version) {
-        return false;
+        return new File(System.getProperty("user.home") + "/.qme/" + version + "/" + version + ".jar").exists();
+    }
+
+    @Override
+    public void launchVersion(String version) {
+        try {
+            Process process = Runtime.getRuntime().exec("java -jar " + System.getProperty("user.home") + "/.qme/" + version + "/" + version + ".jar");
+        } catch (IOException exception) {
+            System.out.println("Failed to launch version " + version);
+            exception.printStackTrace();
+        }
     }
 }

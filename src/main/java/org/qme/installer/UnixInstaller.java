@@ -10,4 +10,9 @@ public class UnixInstaller extends Installer {
     public boolean isInstalled(String version) {
         return false;
     }
+
+    @Override
+    public void launchVersion(String version) {
+
+    }
 }

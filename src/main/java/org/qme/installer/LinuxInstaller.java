@@ -5,11 +5,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Installer for linux based operating systems
+ * @since 0.0.1
+ * @author cameron
+ */
 public class LinuxInstaller extends Installer {
-
-    public LinuxInstaller() {
-        steps = 4;
-    }
 
     @Override
     public void install(String version) {

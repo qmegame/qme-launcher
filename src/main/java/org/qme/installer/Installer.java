@@ -1,15 +1,33 @@
 package org.qme.installer;
 
-import org.qme.Main;
-
 import javax.swing.*;
 
+/**
+ * Abstract class for installers
+ * @author cameron
+ * @since 0.0.1
+ */
 public abstract class Installer {
 
+    /**
+     * The total amount of steps in this installation
+     */
     Integer steps = 0;
+
+    /**
+     * The current step in this installation
+     */
     Integer currentStep = 0;
+
+    /**
+     * The UI component to report progress to
+     */
     JTextArea progressMonitor;
 
+    /**
+     * Get the proper installer instance for the users operating system
+     * @return A valid installer instance
+     */
     public static Installer getInstaller() {
         String os = System.getProperty("os.name").toLowerCase();
         System.out.println("Detecting proper installation for operating system " + os);

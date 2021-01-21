@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * The main entry point for the launcher
  * @author cameron
- * @since 0.0.1
+ * @since 1.0.0
  */
 public class Main {
 

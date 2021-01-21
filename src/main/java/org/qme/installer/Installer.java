@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  * Abstract class for installers
  * @author cameron
- * @since 0.0.1
+ * @since 1.0.0
  */
 public abstract class Installer {
 

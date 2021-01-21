@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 /**
  * UI stuff for the launcher
  * @author cameron
- * @since 0.0.1
+ * @since 1.0.0
  */
 public class LauncherWindow extends JPanel implements ActionListener {
 
@@ -107,21 +107,22 @@ public class LauncherWindow extends JPanel implements ActionListener {
             case "launchgame":
                 if (installer.isInstalled(version)) {
                     installer.launchVersion(version);
-                } else {
-                    if (JOptionPane.showConfirmDialog(this, "Version not installed, would you like to run the installer?") == 0) {
-                        outputArea.setText("Installing version " + version);
+                    return;
+                }
 
-                        // This weird swingWorker thingy is to prevent the installer from blocking the swing thread which results in the gui freezing.
-                        SwingWorker swingWorker = new SwingWorker() {
-                            @Override
-                            protected Object doInBackground() {
-                                installer.install(version);
-                                return null;
-                            }
-                        };
+                if (JOptionPane.showConfirmDialog(this, "Version not installed, would you like to run the installer?") == 0) {
+                    outputArea.setText("Installing version " + version);
 
-                        swingWorker.execute();
-                    }
+                    // This weird swingWorker thingy is to prevent the installer from blocking the swing thread which results in the gui freezing.
+                    SwingWorker swingWorker = new SwingWorker() {
+                        @Override
+                        protected Object doInBackground() {
+                            installer.install(version);
+                            return null;
+                        }
+                    };
+
+                    swingWorker.execute();
                 }
                 break;
         }

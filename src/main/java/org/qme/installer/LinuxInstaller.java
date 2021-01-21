@@ -7,7 +7,7 @@ import java.net.URL;
 
 /**
  * Installer for linux based operating systems
- * @since 0.0.1
+ * @since 1.0.0
  * @author cameron
  */
 public class LinuxInstaller extends Installer {

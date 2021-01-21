@@ -32,7 +32,7 @@ public abstract class Installer {
         String os = System.getProperty("os.name").toLowerCase();
         System.out.println("Detecting proper installation for operating system " + os);
         switch (os) {
-            case "win":
+            case "windows 10":
                 return new WindowsInstaller();
             case "linux":
                 return new LinuxInstaller();

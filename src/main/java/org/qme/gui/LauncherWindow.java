@@ -3,6 +3,7 @@ package org.qme.gui;
 import org.qme.installer.Installer;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,6 +69,10 @@ public class LauncherWindow extends JPanel implements ActionListener {
         outputArea.setEditable(false);
         JScrollPane outputPane = new JScrollPane(outputArea);
 
+        // Auto scroll down on update
+        outputPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        DefaultCaret caret = (DefaultCaret)outputArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         textAreas.add(outputPane, "Output");
         textAreas.add(patchnotesPane, "Changelog");

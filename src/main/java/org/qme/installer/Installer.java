@@ -54,7 +54,9 @@ public abstract class Installer {
     void step(String string) {
         currentStep += 1;
         System.out.println("Installing [" + currentStep + "/"+ steps +"]: " + string);
-        progressMonitor.append("\nInstalling [" + currentStep + "/"+ steps +"]: " + string);
+        if (progressMonitor != null) {
+            progressMonitor.append("\nInstalling [" + currentStep + "/"+ steps +"]: " + string);
+        }
     }
 
     /**
@@ -62,7 +64,9 @@ public abstract class Installer {
      */
     void log(String string) {
         System.out.println(string);
-        progressMonitor.append("\n" + string);
+        if (progressMonitor != null) {
+            progressMonitor.append("\n" + string);
+        }
     }
 
     /**
@@ -71,7 +75,9 @@ public abstract class Installer {
      */
     void fail(String string) {
         System.out.println("Failed: " + string);
-        progressMonitor.append("\nFailed:" + string);
+        if (progressMonitor != null) {
+            progressMonitor.append("\nFailed:" + string);
+        }
     }
 
     /**
@@ -79,7 +85,9 @@ public abstract class Installer {
      */
     void complete() {
         currentStep = 0;
-        progressMonitor.append("\nInstallation successful");
+        if (progressMonitor != null) {
+            progressMonitor.append("\nInstallation successful");
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package org.qme.installer;
 
+import org.qme.release.QmeRelease;
+
 import javax.swing.*;
 
 /**
@@ -102,7 +104,7 @@ public abstract class Installer {
      * Downloads and installs a specified version
      * @param version the version to be installed
      */
-    public abstract void install(String version);
+    public abstract void install(QmeRelease version);
 
     /**
      * Checks if a version is installed

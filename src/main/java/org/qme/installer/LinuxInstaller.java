@@ -1,5 +1,7 @@
 package org.qme.installer;
 
+import org.qme.release.QmeRelease;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -17,7 +19,9 @@ public class LinuxInstaller extends Installer {
     }
 
     @Override
-    public void install(String version) {
+    public void install(QmeRelease release) {
+        String version = release.getVersion();
+
         /*
          * Step 1: Verify that the user is running Java JRE 15 or similar.
          * In the future we may need to update this to allow versions higher than 15.
@@ -51,7 +55,7 @@ public class LinuxInstaller extends Installer {
         // https://stackoverflow.com/questions/22273045/java-getting-download-progress
         URL url = null;
         try {
-            url = new URL("https://cameron.media/u/82QtAR8wjb.png");
+            url = new URL(release.getDownloadUrl());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -65,7 +69,7 @@ public class LinuxInstaller extends Installer {
             long completeFileSize = httpConnection.getContentLength();
 
             java.io.BufferedInputStream in = new java.io.BufferedInputStream(httpConnection.getInputStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.home") + "/.qme/" + version + "/test.png");
+            FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.home") + "/.qme/" + version + "/qme.jar");
             java.io.BufferedOutputStream bout = new BufferedOutputStream(fileOutputStream, 1024);
             byte[] data = new byte[1024];
             long downloadedFileSize = 0;

@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Installer for linux based operating systems
+ * Installer for Windows 10
  * @since 1.0.0
  * @author Tom
  */

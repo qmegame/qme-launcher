@@ -37,6 +37,10 @@ public class MacInstaller extends Installer {
 
     @Override
     public void launchVersion(String version) {
-        // "java -XstartOnFirstThread -jar ~/.qme/" + version + "qme5.jar";
+        Runtime.getRuntimee().exec(
+                "java -XstartOnFirstThread -jar " +
+                System.getProperty("user.home") + "/.qme/"
+                + version + "/" + version + ".jar"
+        );
     }
 }

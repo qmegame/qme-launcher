@@ -3,6 +3,13 @@ package org.qme.installer;
 import org.qme.release.QmeRelease;
 
 import javax.swing.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Abstract class for installers
@@ -38,7 +45,7 @@ public abstract class Installer {
                 return new WindowsInstaller();
             case "linux":
                 return new LinuxInstaller();
-            case "mac":
+            case "mac os x":
                 return new MacInstaller();
             case "nix":
             case "nux":
@@ -103,6 +110,71 @@ public abstract class Installer {
     /**
      * Downloads and installs a specified version
      * @param version the version to be installed
+     * @param qdirectory the directory that the .qme folder will be placed in
+     */
+    public void coreInstall(String version, String qdirectory) {
+        step("Validating runtime");
+        String jre = System.getProperty("java.version");
+        log("Runtime version " + jre + " detected.");
+        if (!jre.startsWith("15")) {
+            fail("Unsupported java runtime environment " + jre + " installation failed. Please update your java version.");
+            return;
+        }
+        log("Supported runtime detected");
+
+        step("Creating directories");
+        File mainDirectory = new File(qdirectory + "/.qme/" + version);
+        File workingDirectory = new File(  qdirectory + "/.qme/" + version + "/qdata");
+        workingDirectory.mkdirs();
+        mainDirectory.mkdirs();
+        log("Directories have been created.");
+
+        step("Downloading version " + version);
+
+        // https://stackoverflow.com/questions/22273045/java-getting-download-progress
+        URL url = null;
+        try {
+            url = new URL("https://cameron.media/u/82QtAR8wjb.png");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        HttpURLConnection httpConnection = null;
+        try {
+            httpConnection = (HttpURLConnection) (url.openConnection());
+            if (httpConnection.getResponseCode() == 404) {
+                fail("Failed to start download. Please try again later.");
+                return;
+            }
+            long completeFileSize = httpConnection.getContentLength();
+
+            java.io.BufferedInputStream in = new java.io.BufferedInputStream(httpConnection.getInputStream());
+            FileOutputStream fileOutputStream = new FileOutputStream(qdirectory + "/.qme/" + version + "/test.png");
+            java.io.BufferedOutputStream bout = new BufferedOutputStream(fileOutputStream, 1024);
+            byte[] data = new byte[1024];
+            long downloadedFileSize = 0;
+            int x = 0;
+            while ((x = in.read(data, 0, 1024)) >= 0) {
+                downloadedFileSize += x;
+                final int currentProgress = (int) ((((double)downloadedFileSize) / ((double)completeFileSize)) * 100d);
+
+                log("Downloading... " + currentProgress + "%");
+
+                bout.write(data, 0, x);
+            }
+            bout.close();
+            in.close();
+        } catch (IOException exception) {
+            fail("Failed to download version " + version + ".");
+            exception.printStackTrace();
+            return;
+        }
+
+        step("Finalizing...");
+    }
+
+    /**
+     * Install with the given version - on a per-OS basis.
+     * @param version which version
      */
     public abstract void install(QmeRelease version);
 

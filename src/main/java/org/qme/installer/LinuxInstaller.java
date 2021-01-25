@@ -25,7 +25,7 @@ public class LinuxInstaller extends Installer {
     @Override
     public boolean isInstalled(String version) {
         // this is kinda duplicated. >:-(
-        log("Installing for mac");
+        log("Installing for linux");
         return new File(
                 System.getProperty("user.home") + "/.qme/"
                         + version + "/" + version + ".jar"

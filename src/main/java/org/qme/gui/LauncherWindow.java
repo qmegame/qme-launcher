@@ -112,7 +112,10 @@ public class LauncherWindow extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         QmeRelease release = releaseManager.getReleaseByVersion(versionsList.getSelectedItem().toString());
-        String version = release.getVersion();
+        String version = "invalid";
+        if (release != null) {
+            version = release.getVersion();
+        }
 
         switch (e.getActionCommand()) {
             case "selectversion":

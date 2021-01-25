@@ -37,7 +37,11 @@ public class QmeReleaseManager {
         GHRepository repository = github.getRepository(url);
 
         repository.listReleases().forEach(release -> {
-            releases.add(new QmeRelease(release.getTagName(), release.getAssetsUrl(), release.getBody(), release.getName(), release.isPrerelease(), release.getPublished_at()));
+            try {
+                releases.add(new QmeRelease(release.getTagName(), release.listAssets().toList().get(1).getBrowserDownloadUrl(), release.getBody(), release.getName(), release.isPrerelease(), release.getPublished_at()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 

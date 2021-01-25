@@ -2,10 +2,8 @@ package org.qme.installer;
 
 import org.qme.release.QmeRelease;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Installer for linux based operating systems
@@ -20,13 +18,14 @@ public class LinuxInstaller extends Installer {
 
     @Override
     public void install(QmeRelease release) {
-        coreInstall(release.getVersion(), System.getProperty("user.home"));
+        coreInstall(release, System.getProperty("user.home"));
         complete();
     }
 
     @Override
     public boolean isInstalled(String version) {
         // this is kinda duplicated. >:-(
+        log("Installing for linux");
         return new File(
                 System.getProperty("user.home") + "/.qme/"
                         + version + "/" + version + ".jar"

@@ -46,7 +46,6 @@ public abstract class Installer {
             case "linux":
                 return new LinuxInstaller();
             case "mac os x":
-                System.out.println("ffffff");
                 return new MacInstaller();
             case "nix":
             case "nux":

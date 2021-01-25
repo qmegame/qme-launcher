@@ -170,8 +170,6 @@ public abstract class Installer {
         }
 
         step("Finalizing...");
-
-        complete();
     }
 
     /**

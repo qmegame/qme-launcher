@@ -19,7 +19,28 @@ public class LinuxInstaller extends Installer {
     }
 
     @Override
-    public void install(String version) {
-        super.coreInstall(version, System.getProperty("user.home"));
+    public void install(QmeRelease release) {
+        super.coreInstall(release.getVersion(), System.getProperty("user.home"));
     }
+
+    @Override
+    public boolean isInstalled(String version) {
+        // this is kinda duplicated. >:-(
+        return new File(
+                System.getProperty("user.home") + "/.qme/"
+                        + version + "/" + version + ".jar"
+        ).exists();
+    }
+
+    @Override
+    public void launchVersion(String version) {
+        try {
+            Process process = Runtime.getRuntime().exec("java -jar " + System.getProperty("user.home") + "/.qme/" + version + "/" + version + ".jar");
+            // TODO: Log stdout of process to the output text area.
+        } catch (IOException exception) {
+            System.out.println("Failed to launch version " + version);
+            exception.printStackTrace();
+        }
+    }
+
 }

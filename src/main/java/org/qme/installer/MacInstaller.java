@@ -1,12 +1,15 @@
 package org.qme.installer;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Installation for Mac - nearly identical to that for Linux.
  * @since 1.0.0
  */
 import org.qme.release.QmeRelease;
+
+import javax.swing.*;
 
 public class MacInstaller extends Installer {
 
@@ -19,12 +22,12 @@ public class MacInstaller extends Installer {
 
     /**
      * Install in home directory.
-     * @param version which version
+     * @param release which version
      */
     @Override
-    public void install(String version) {
+    public void install(QmeRelease release) {
         System.out.println("Installing for mac ...");
-        coreInstall(version, System.getProperty("user.home"));
+        coreInstall(release.getVersion(), System.getProperty("user.home"));
     }
 
     @Override
@@ -37,10 +40,15 @@ public class MacInstaller extends Installer {
 
     @Override
     public void launchVersion(String version) {
-        Runtime.getRuntimee().exec(
-                "java -XstartOnFirstThread -jar " +
-                System.getProperty("user.home") + "/.qme/"
-                + version + "/" + version + ".jar"
-        );
+        try {
+            Runtime.getRuntime().exec(
+                    "java -XstartOnFirstThread -jar " +
+                            System.getProperty("user.home") + "/.qme/"
+                            + version + "/" + version + ".jar"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "An error has occurred.");
+            System.exit(-1);
+        }
     }
 }

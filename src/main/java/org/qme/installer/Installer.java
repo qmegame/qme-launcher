@@ -43,6 +43,7 @@ public abstract class Installer {
         return switch (os) {
             case "windows 10" -> new WindowsInstaller();
             case "linux" -> new LinuxInstaller();
+            case "mac" -> new MacInstaller();
             case "mac os x" -> new MacInstaller();
             case "nix", "nux", "aix" -> new UnixInstaller();
             default -> null;

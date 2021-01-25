@@ -1,15 +1,16 @@
 package org.qme.installer;
 
+import org.qme.release.QmeRelease;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
 /**
  * Installation for Mac - nearly identical to that for Linux.
+ *
  * @since 1.0.0
  */
-import org.qme.release.QmeRelease;
-
-import javax.swing.*;
 
 public class MacInstaller extends Installer {
 
@@ -26,8 +27,8 @@ public class MacInstaller extends Installer {
      */
     @Override
     public void install(QmeRelease release) {
-        System.out.println("Installing for mac ...");
-        coreInstall(release.getVersion(), System.getProperty("user.home"));
+        log("Installing for mac");
+        coreInstall(release, System.getProperty("user.home"));
     }
 
     @Override

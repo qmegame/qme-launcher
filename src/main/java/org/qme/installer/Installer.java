@@ -109,10 +109,12 @@ public abstract class Installer {
 
     /**
      * Downloads and installs a specified version
-     * @param version the version to be installed
+     * @param release the release to be installed
      * @param qdirectory the directory that the .qme folder will be placed in
      */
-    public void coreInstall(String version, String qdirectory) {
+    public void coreInstall(QmeRelease release, String qdirectory) {
+        String version = release.getVersion();
+
         step("Validating runtime");
         String jre = System.getProperty("java.version");
         log("Runtime version " + jre + " detected.");
@@ -134,7 +136,7 @@ public abstract class Installer {
         // https://stackoverflow.com/questions/22273045/java-getting-download-progress
         URL url = null;
         try {
-            url = new URL("https://cameron.media/u/82QtAR8wjb.png");
+            url = new URL(release.getDownloadUrl());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -148,14 +150,14 @@ public abstract class Installer {
             long completeFileSize = httpConnection.getContentLength();
 
             java.io.BufferedInputStream in = new java.io.BufferedInputStream(httpConnection.getInputStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(qdirectory + "/.qme/" + version + "/test.png");
+            FileOutputStream fileOutputStream = new FileOutputStream(qdirectory + "/.qme/" + version + "/" + version + ".jar");
             java.io.BufferedOutputStream bout = new BufferedOutputStream(fileOutputStream, 1024);
             byte[] data = new byte[1024];
             long downloadedFileSize = 0;
             int x = 0;
             while ((x = in.read(data, 0, 1024)) >= 0) {
                 downloadedFileSize += x;
-                final int currentProgress = (int) ((((double)downloadedFileSize) / ((double)completeFileSize)) * 100d);
+                final double currentProgress = ((((double)downloadedFileSize) / ((double)completeFileSize)) * 100d);
 
                 log("Downloading... " + currentProgress + "%");
 

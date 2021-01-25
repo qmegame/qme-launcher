@@ -6,6 +6,8 @@ import java.io.File;
  * Installation for Mac - nearly identical to that for Linux.
  * @since 1.0.0
  */
+import org.qme.release.QmeRelease;
+
 public class MacInstaller extends Installer {
 
     /**

@@ -1,11 +1,15 @@
 package org.qme.gui;
 
 import org.qme.installer.Installer;
+import org.qme.release.QmeRelease;
+import org.qme.release.QmeReleaseManager;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * UI stuff for the launcher
@@ -27,12 +31,18 @@ public class LauncherWindow extends JPanel implements ActionListener {
     Installer installer;
 
     /**
+     * Release manager instance
+     */
+    QmeReleaseManager releaseManager;
+
+    /**
      * Creates a new instance of the launcher windows.
      * @param installer the reference to an installer
      */
-    public LauncherWindow(Installer installer) {
+    public LauncherWindow(Installer installer, QmeReleaseManager releaseManager) {
         super(new BorderLayout());
         this.installer = installer;
+        this.releaseManager = releaseManager;
 
         // For positioning components
         GridBagConstraints constraints = new GridBagConstraints();
@@ -41,8 +51,8 @@ public class LauncherWindow extends JPanel implements ActionListener {
         constraints.weightx = 1.0;
 
         // Setup version panel
-        String[] versions = {"preA", "preB"};
-        versionsList = new JComboBox(versions);
+        ArrayList<String> versions = releaseManager.getVersions();
+        versionsList = new JComboBox(versions.toArray(new String[versions.size()]));
 
         versionsList.addActionListener(this);
         versionsList.setActionCommand("selectversion");
@@ -57,7 +67,7 @@ public class LauncherWindow extends JPanel implements ActionListener {
 
         // Setup patch notes panel
 
-        JTextArea patchnotesArea = new JTextArea("AAAAAA\nAAAAAAAAAAAAAAAAAAA");
+        JTextArea patchnotesArea = new JTextArea(releaseManager.getChangelog());
         patchnotesArea.setEditable(false);
         JScrollPane patchnotesPane = new JScrollPane(patchnotesArea);
 
@@ -68,6 +78,10 @@ public class LauncherWindow extends JPanel implements ActionListener {
         outputArea.setEditable(false);
         JScrollPane outputPane = new JScrollPane(outputArea);
 
+        // Auto scroll down on update
+        outputPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        DefaultCaret caret = (DefaultCaret)outputArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         textAreas.add(outputPane, "Output");
         textAreas.add(patchnotesPane, "Changelog");
@@ -97,12 +111,12 @@ public class LauncherWindow extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        String version = versionsList.getSelectedItem().toString();
+        QmeRelease release = releaseManager.getReleaseByVersion(versionsList.getSelectedItem().toString());
+        String version = release.getVersion();
 
         switch (e.getActionCommand()) {
             case "selectversion":
-                JComboBox comboBox = (JComboBox) e.getSource();
-                versionStatusLabel.setText(installer.isInstalled(version) ? "Version " + comboBox.getSelectedItem() + " is installed" : "Version " + comboBox.getSelectedItem() + " is not installed");
+                versionStatusLabel.setText(installer.isInstalled(version) ? "Version " + version + " is installed" : "Version " + version + " is not installed");
                 break;
             case "launchgame":
                 if (installer.isInstalled(version)) {
@@ -117,7 +131,7 @@ public class LauncherWindow extends JPanel implements ActionListener {
                     SwingWorker swingWorker = new SwingWorker() {
                         @Override
                         protected Object doInBackground() {
-                            installer.install(version);
+                            installer.install(release);
                             return null;
                         }
                     };

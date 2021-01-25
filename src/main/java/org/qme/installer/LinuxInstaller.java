@@ -21,6 +21,7 @@ public class LinuxInstaller extends Installer {
     @Override
     public void install(QmeRelease release) {
         coreInstall(release.getVersion(), System.getProperty("user.home"));
+        complete();
     }
 
     @Override

@@ -1,8 +1,10 @@
 package org.qme.installer;
 
+import org.qme.release.QmeRelease;
+
 public class MacInstaller extends Installer {
     @Override
-    public void install(String version) {
+    public void install(QmeRelease version) {
         System.out.println("Installing for mac");
     }
 

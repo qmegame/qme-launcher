@@ -40,20 +40,13 @@ public abstract class Installer {
     public static Installer getInstaller() {
         String os = System.getProperty("os.name").toLowerCase();
         System.out.println("Detecting proper installation for operating system " + os);
-        switch (os) {
-            case "win":
-                return new WindowsInstaller();
-            case "linux":
-                return new LinuxInstaller();
-            case "mac os x":
-                return new MacInstaller();
-            case "nix":
-            case "nux":
-            case "aix":
-                return new UnixInstaller();
-            default:
-                return null;
-        }
+        return switch (os) {
+            case "windows 10" -> new WindowsInstaller();
+            case "linux" -> new LinuxInstaller();
+            case "mac" -> new MacInstaller();
+            case "nix", "nux", "aix" -> new UnixInstaller();
+            default -> null;
+        };
     }
 
     /**

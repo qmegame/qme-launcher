@@ -126,7 +126,7 @@ public class QmeReleaseManager {
     }
 
     /**
-     * A sorter that shorts releases by date.
+     * A sorter that sorts releases by date.
      */
     private class SortByDate implements Comparator<QmeRelease> {
         public int compare(QmeRelease a, QmeRelease b)

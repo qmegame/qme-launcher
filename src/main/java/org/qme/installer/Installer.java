@@ -12,7 +12,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Abstract class for installers
+ * This class acts as a base for installers
+ * Installers that extend this class contain code that is for each specific operating system
+ * When an installer needs to override code it should contain Java docs explaining the changes
  * @author cameron
  * @since 1.0.0
  */
@@ -44,7 +46,6 @@ public abstract class Installer {
             case "windows 10" -> new WindowsInstaller();
             case "linux" -> new LinuxInstaller();
             case "mac", "mac os x" -> new MacInstaller();
-            case "nix", "nux", "aix" -> new UnixInstaller();
             default -> null;
         };
     }
@@ -62,7 +63,7 @@ public abstract class Installer {
     }
 
     /**
-     * Logs debug information about the installtion
+     * Logs debug information about the installation
      */
     void log(String string) {
         System.out.println(string);
@@ -105,7 +106,7 @@ public abstract class Installer {
      * @param release the release to be installed
      * @param qdirectory the directory that the .qme folder will be placed in
      */
-    public void coreInstall(QmeRelease release, String qdirectory) {
+    void coreInstall(QmeRelease release, String qdirectory) {
         String version = release.getVersion();
 
         step("Validating runtime");
@@ -147,12 +148,17 @@ public abstract class Installer {
             java.io.BufferedOutputStream bout = new BufferedOutputStream(fileOutputStream, 1024);
             byte[] data = new byte[1024];
             long downloadedFileSize = 0;
+            long startTime = System.currentTimeMillis();
             int x = 0;
             while ((x = in.read(data, 0, 1024)) >= 0) {
                 downloadedFileSize += x;
-                final double currentProgress = ((((double)downloadedFileSize) / ((double)completeFileSize)) * 100d);
+                final int currentProgress = (int) ((((double)downloadedFileSize) / ((double)completeFileSize)) * 100d);
 
-                log("Downloading... " + currentProgress + "%");
+                // Only show progress every 2 seconds
+                if (startTime + 2000 < System.currentTimeMillis()) {
+                    startTime = System.currentTimeMillis();
+                    log("Downloading game files " + currentProgress + "%");
+                }
 
                 bout.write(data, 0, x);
             }
@@ -164,26 +170,33 @@ public abstract class Installer {
             return;
         }
 
-        step("Finalizing...");
+        step("Core install complete.");
     }
 
     /**
      * Install with the given version - on a per-OS basis.
-     * @param version which version
+     * @param release which release to install
      */
-    public abstract void install(QmeRelease version);
+    public void install(QmeRelease release) {
+        coreInstall(release, System.getProperty("user.home"));
+        complete();
+    }
 
     /**
      * Checks if a version is installed
      * @param version the version to check
      * @return if the version is installed
      */
-    public abstract boolean isInstalled(String version);
+    public boolean isInstalled(String version) {
+        return new File(System.getProperty("user.home") + "/.qme/" + version + "/" + version + ".jar").exists();
+    }
 
     /**
      * Launches a version
      * @param version the version to be launched
      */
-    public abstract void launchVersion(String version);
+    public Process launchVersion(String version) throws IOException {
+        return Runtime.getRuntime().exec("java -jar " + System.getProperty("user.home") + "/.qme/" + version + "/" + version + ".jar");
+    }
 
 }

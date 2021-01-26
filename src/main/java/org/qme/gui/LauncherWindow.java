@@ -9,6 +9,8 @@ import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -122,11 +124,30 @@ public class LauncherWindow extends JPanel implements ActionListener {
                 versionStatusLabel.setText(installer.isInstalled(version) ? "Version " + version + " is installed" : "Version " + version + " is not installed");
                 break;
             case "launchgame":
+
                 if (installer.isInstalled(version)) {
-                    installer.launchVersion(version);
+                    try {
+                        Process process = installer.launchVersion(version);
+
+                        // Handles the catching and logging out the output stream
+                        SwingWorker swingWorker = new SwingWorker() {
+                            @Override
+                            protected Object doInBackground() throws IOException {
+                                LauncherOutputStream launcherOutputStream = new LauncherOutputStream(outputArea);
+                                process.getInputStream().transferTo(launcherOutputStream);
+                                process.getErrorStream().transferTo(launcherOutputStream);
+                                return null;
+                            }
+                        };
+                        swingWorker.execute();
+                    } catch (IOException ioException) {
+                        JOptionPane.showMessageDialog(this, "Failed: Could not launch version " + version + " IOException: " + ioException.getMessage());
+                        ioException.printStackTrace();
+                    }
                     return;
                 }
 
+                // Qme is not installed yet
                 if (JOptionPane.showConfirmDialog(this, "Version not installed, would you like to run the installer?") == 0) {
                     outputArea.setText("Installing version " + version);
 
@@ -145,4 +166,18 @@ public class LauncherWindow extends JPanel implements ActionListener {
         }
     }
 
+    private static class LauncherOutputStream extends OutputStream {
+
+        private JTextArea textArea;
+
+        public LauncherOutputStream(JTextArea textArea) {
+            this.textArea = textArea;
+        }
+
+        @Override
+        public void write(int b) {
+            textArea.append(String.valueOf((char) b));
+            textArea.setCaretPosition(textArea.getDocument().getLength());
+        }
+    }
 }

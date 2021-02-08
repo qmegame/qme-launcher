@@ -47,7 +47,7 @@ public abstract class Installer {
             return new WindowsInstaller();
         } else if (os.equalsIgnoreCase("linux")) {
             return new LinuxInstaller();
-        } else if (os.equalsIgnoreCase("mac")) {
+        } else if (os.equalsIgnoreCase("mac") || os.equalsIgnoreCase("mac os x")) {
             return new MacInstaller();
         } else {
             return null;

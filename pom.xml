@@ -63,6 +63,13 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <target>11</target>
+                    <source>11</source>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
